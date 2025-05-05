@@ -1,0 +1,12 @@
+20:26:58.747 [main] DEBUG reactor.util.Loggers -- Using Slf4j logging framework
+20:26:58.751 [main] DEBUG reactor.core.publisher.Hooks -- Enabling stacktrace debugging via onOperatorDebug
+20:49:36.803 [main] DEBUG reactor.util.Loggers -- Using Slf4j logging framework
+20:49:36.807 [main] DEBUG reactor.core.publisher.Hooks -- Enabling stacktrace debugging via onOperatorDebug
+20:56:37.595 [main] DEBUG reactor.util.Loggers -- Using Slf4j logging framework
+20:56:37.599 [main] DEBUG reactor.core.publisher.Hooks -- Enabling stacktrace debugging via onOperatorDebug
+21:26:12.783 [main] DEBUG reactor.util.Loggers -- Using Slf4j logging framework
+21:26:12.787 [main] DEBUG reactor.core.publisher.Hooks -- Enabling stacktrace debugging via onOperatorDebug
+21:26:29.879 [main] DEBUG reactor.util.Loggers -- Using Slf4j logging framework
+21:26:29.883 [main] DEBUG reactor.core.publisher.Hooks -- Enabling stacktrace debugging via onOperatorDebug
+21:27:16.284 [main] DEBUG reactor.util.Loggers -- Using Slf4j logging framework
+21:27:16.287 [main] DEBUG reactor.core.publisher.Hooks -- Enabling stacktrace debugging via onOperatorDebug
