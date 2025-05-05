@@ -1,8 +1,10 @@
 # Docker MCP Server
 
-This module provides a  implementation of a Model Context Protocol MCP server for Docker commands using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework. Docker MCP Servr uses the MCP Mediator automactic MCP Server generation feature to generate MCP Tools for the existing Docker commands using `@McpTool` and minimal description.
+This module provides an implementation of a **Model Context Protocol** MCP server for Docker commands, powered by the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
+The Docker MCP Server utilizes the **automatic server generation** feature of MCP Mediator to expose existing Docker commands as MCP Tools. 
+Each command is optionally annotated with `@McpTool` along with a minimal description to enhance tool discoverability and usability.
 
-Check all the supported commands [here](#supported-docker-commands-as-mcp-server-tools). 
+👉 See the full list of supported commands [here](#supported-docker-commands-as-mcp-server-tools).
 
 ![Docker MCP Server](./.github/static/docker_mcp_server_inspect.png)
 
@@ -194,5 +196,5 @@ Contributions are welcome! Please feel free to submit a Pull Request. Read this 
 
 ### License
 
-This project is licensed under the GPL3 License - see the LICENSE file for details.
+This project is licensed under the GPL3 License—see the LICENSE file for details.
 
