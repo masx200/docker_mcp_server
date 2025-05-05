@@ -1,6 +1,6 @@
 # Docker MCP Server
 
-This module provides a  implementation of a Model Context Protocol MCP server for Docker commands using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework. Docker MCP Servr uses the MCP Mediator automactic MCP Server generation feature to generate MCP Tools for the existing Docker commands using `@@McpTool` and minimal description.
+This module provides a  implementation of a Model Context Protocol MCP server for Docker commands using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework. Docker MCP Servr uses the MCP Mediator automactic MCP Server generation feature to generate MCP Tools for the existing Docker commands using `@McpTool` and minimal description.
 
 Check all the supported commands [here](#supported-docker-commands-as-mcp-server-tools). 
 
@@ -73,24 +73,6 @@ using `java -jar` command. Or, you can create a standalone executable applicatio
  native-image -jar mcp-mediator-implementation-docker-[version].jar     
 ```
 and this command creates an executable file: `'mcp-mediator-implementation-docker-[version]` that can be executed.
-
-
-### Automatically generate MCP Tools
-As it mentioned before, this project uses [`MCP Mediator`](https://github.com/makbn/mcp_mediator) to generate MCP Tools from the existing Docker Service. In order to create MCP Tool, each method is annotated with `@McpTool` to provide a minimal information about the tool. 
-Howeve, this step is not required and MCP Mediator can generate the MCP Tools withot using the `@McpTool` annotation. It generates the name and description automatically using method, class, and package name. 
-To enable this feature, you can simply set `create for non-annotated methods` to be true:
-```java
-     DefaultMcpMediator mediator = new DefaultMcpMediator(McpMediatorConfigurationBuilder.builder()
-                    .createDefault()
-                    .serverName(serverName)
-                    .serverVersion(serverVersion)
-                    .build());
-            mediator.registerHandler(McpServiceFactory.create(dockerClientService)
-                    .createForNonAnnotatedMethods(true) // set to true 
-```
-Keep that in mind, a proper `name` and `description` for MCP Tool can significantly improve the performance of the MCP client to identify and use the tool and generating automatic name and description based on the method, class, and package name can't provide the best peresntation. 
-
-
 
 
 ### Automatically Generate MCP Tools
