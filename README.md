@@ -1,10 +1,9 @@
 # MCP Mediator Docker Implementation
 
-This module provides a Docker-based implementation of an MCP (Message Communication Protocol) server using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
+This module provides a Docker-based implementation of a Model Context Protocol MCP server using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
+Check all the supported commands [here](#supported-docker-commands-as-mcp-server-tools).
 
-It acts as a pluggable server that leverages Docker's API to handle MCP messages using mediator-driven handler registration and execution.
-
-![](./.github/static/docker_mcp_server_inspect.png)
+![Docker MCP Server](./.github/static/docker_mcp_server_inspect.png)
 
 
 > [!IMPORTANT]  
@@ -160,7 +159,13 @@ This project is a **Git subtree module** of the parent repository [`makbn/mcp_me
 If you're working in the context of the full `mcp_mediator` system:
 
 ```bash
-git clone https://github.com/makbn/mcp_mediator.git
-cd mcp_mediator
+`git clone --recurse-submodules https://github.com/makbn/docker_mcp_server.git`
+```
+### Contributing
 
+Contributions are welcome! Please feel free to submit a Pull Request. Read this first!
+
+### License
+
+This project is licensed under the GPL3 License - see the LICENSE file for details.
 
