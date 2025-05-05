@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <docker-java.version>3.5.0</docker-java.version>
         <commons-cli.version>1.9.0</commons-cli.version>
+        <native-maven-plugin.version>0.10.6</native-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -37,6 +38,18 @@
             <groupId>com.github.docker-java</groupId>
             <artifactId>docker-java-core</artifactId>
             <version>${docker-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcpkix-jdk18on</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.80</version>
         </dependency>
         <dependency>
             <groupId>com.github.docker-java</groupId>
@@ -99,6 +112,48 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>${native-maven-plugin.version}</version>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>${native-maven-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <agent>
+                                <enabled>true</enabled>
+                                <options>
+                                    <enableExperimentalPredefinedClasses>true</enableExperimentalPredefinedClasses>
+                                    <enableExperimentalUnsafeAllocationTracing>true</enableExperimentalUnsafeAllocationTracing>
+                                    <trackReflectionMetadata>true</trackReflectionMetadata>
+                                </options>
+                            </agent>
+                            <fallback>false</fallback>
+                            <agentResourceDirectory>graal-config</agentResourceDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project> 
