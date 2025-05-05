@@ -54,7 +54,7 @@ public class DockerMcpServer {
     }
 
     private static void configureLogging(CommandLine cmd) {
-        System.setProperty("DOCKER_MCP_LOG_FILE", cmd.getOptionValue("log-file", "logs/example.log"));
+        System.setProperty("DOCKER_MCP_LOG_FILE", cmd.getOptionValue("log-file", "logs/mcp_docker_server.log"));
         System.setProperty("DOCKER_MCP_LOG_LEVEL", cmd.getOptionValue("log-level", "DEBUG"));
     }
 
