@@ -6,6 +6,11 @@ It acts as a pluggable server that leverages Docker's API to handle MCP messages
 
 ![](./.github/static/docker_mcp_server_inspect.png)
 
+
+> [!IMPORTANT]  
+> This is part of `mcp_mediator` project: [https://github.com/makbn/docker_mcp_server](https://github.com/makbn/docker_mcp_server)
+> To build or modify, clone the parent repository: `git clone --recurse-submodules https://github.com/makbn/docker_mcp_server.git`
+
 ### Usage Examples
 
 ```shell
