@@ -1,6 +1,6 @@
 # MCP Mediator Docker Implementation
 
-This module provides a Docker-based implementation of a Model Context Protocol MCP server using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
+This module provides a  implementation of a Model Context Protocol MCP server for Docker commands using the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
 Check all the supported commands [here](#supported-docker-commands-as-mcp-server-tools).
 
 ![Docker MCP Server](./.github/static/docker_mcp_server_inspect.png)
