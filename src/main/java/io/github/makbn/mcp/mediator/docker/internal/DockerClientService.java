@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.io.FileUtils;
 import org.jspecify.annotations.Nullable;
 
 import java.io.*;
@@ -64,11 +65,6 @@ public class DockerClientService {
         cmd.exec();
 
         return true;
-    }
-
-    // not supported
-    public AttachContainerCmd attachContainerCmd(@NonNull String containerId) {
-        return internalClient.attachContainerCmd(containerId);
     }
 
     @McpTool(name = "docker_container_diff",
@@ -767,48 +763,189 @@ public class DockerClientService {
         return cmd;
     }
 
-    public BuildImageCmd buildImageCmd(InputStream tarInputStream) {
-        return internalClient.buildImageCmd(tarInputStream);
+    @McpTool(
+            name = "docker_load_image",
+            description = """
+        Loads a Docker image from a provided tar file absolute address.
+
+        This command allows you to import a Docker image that has been saved using `docker save`, or any compatible image tarball,
+        directly into the Docker engine. This is useful for scenarios where the image is obtained from a file, network, or remote source
+        and not directly from a registry.
+
+        Parameters:
+        - tarFile: (String, required) The input tar file absolute address.
+
+        Returns:
+        - true if successfully loaded the image
+        """
+    )
+    public boolean loadImageCmd(String tarFile) throws FileNotFoundException {
+        internalClient.loadImageCmd(new FileInputStream(tarFile))
+                .exec();
+        return true;
     }
 
-    public LoadImageCmd loadImageCmd(InputStream imageStream) {
-        return internalClient.loadImageCmd(imageStream);
+    @McpTool(
+            name = "docker_list_tasks",
+            description = """
+        Lists the tasks in a Docker Swarm environment.
+
+        This command retrieves all the tasks currently known to the Docker engine. Tasks are the individual units of work
+        in a Swarm service, each representing a running container instance. This is especially useful for monitoring,
+        debugging, or inspecting the current state of services in a Swarm cluster.
+
+        Parameters:
+        - None
+
+        Returns:
+        - (List<Task>) A list of Task objects representing running or completed tasks within the Swarm environment.
+        """
+    )
+    public List<Task> listTasksCmd() {
+        return internalClient.listTasksCmd()
+                .exec();
     }
 
-    public ListTasksCmd listTasksCmd() {
-        return internalClient.listTasksCmd();
+    @McpTool(
+            name = "docker_save_image",
+            description = """
+        Saves a Docker image to a local tar file.
+
+        This command exports a specified Docker image (with an optional tag) to a tar archive on the local filesystem.
+        This is useful for backing up images, transferring them between systems, or archiving versions for reproducibility.
+
+        Parameters:
+        - imageName: (String, required) The name of the Docker image to save.
+        - imageTag: (String, required) The tag of the image to save (e.g., "latest").
+        - tarFileAbsolutePath: (String, required) The full absolute path where the resulting tar file should be saved.
+
+        Returns:
+        - (boolean) true if the image is successfully saved to the specified file.
+        
+        Throws:
+        - IOException if writing to the target file fails or if the image stream cannot be read.
+        """
+    )
+    public boolean saveImagesCmd(String imageName, String imageTag, String tarFileAbsolutePath) throws IOException {
+        InputStream stream = internalClient.saveImagesCmd()
+                .withImage(imageName, imageTag)
+                .exec();
+
+        File targetFile = new File(tarFileAbsolutePath);
+
+        FileUtils.copyInputStreamToFile(stream, targetFile);
+
+        return true;
     }
 
-    public SaveImagesCmd saveImagesCmd() {
-        return internalClient.saveImagesCmd();
+    @McpTool(
+            name = "docker_join_swarm",
+            description = """
+        Joins the current Docker node to an existing Swarm cluster.
+
+        This command configures the node to join an existing Docker Swarm cluster using the provided advertise address, join token, and remote manager addresses.
+
+        Parameters:
+        - advertiseAddr: (String, optional) The address advertised to other nodes in the cluster. This should be reachable by other Swarm nodes.
+        - joinToken: (String, optional) The Swarm join token. Required for joining as a worker or manager.
+        - remoteAddrs: (List<String>, optional) A list of manager node addresses to connect to during the join operation.
+
+        Returns:
+        - (boolean) true if the node successfully joins the Swarm.
+
+        Notes:
+        - If `advertiseAddr` or `joinToken` are not provided, Docker's default behavior applies.
+        - All `null` entries in `remoteAddrs` are ignored.
+        """
+    )
+    public boolean joinSwarmCmd(String advertiseAddr, String joinToken, List<String> remoteAddrs) {
+        JoinSwarmCmd cmd =  internalClient.joinSwarmCmd();
+        if (advertiseAddr != null && !advertiseAddr.isBlank()) {
+            cmd.withAdvertiseAddr(advertiseAddr);
+        }
+
+        if (joinToken != null && !joinToken.isBlank()) {
+            cmd.withJoinToken(joinToken);
+        }
+
+        if (remoteAddrs != null) {
+            cmd.withRemoteAddrs(remoteAddrs.stream().filter(Objects::nonNull).toList());
+        }
+
+        cmd.exec();
+
+        return true;
     }
 
-    public JoinSwarmCmd joinSwarmCmd() {
-        return internalClient.joinSwarmCmd();
+    @McpTool(
+            name = "docker_create_volume",
+            description = """
+        Creates a new Docker volume with optional configurations.
+
+        This command creates a volume that can later be mounted into containers. You can configure the volume's name, driver, driver options, and labels.
+
+        Parameters:
+        - name: (String, optional) The name of the volume. If not specified, Docker will generate a unique name.
+        - driver: (String, optional) Volume driver to use. Defaults to 'local'.
+        - driverOpts: (Map<String, String>, optional) A map of driver-specific options passed during volume creation.
+        - labels: (Map<String, String>, optional) Labels to set on the volume for identification and management.
+
+        Returns:
+        - (CreateVolumeResponse) The response containing details about the created volume.
+        """
+    )
+    public CreateVolumeResponse createVolumeCmd(
+            String name,
+            String driver,
+            Map<String, String> driverOpts,
+            Map<String, String> labels
+    ) {
+        try(CreateVolumeCmd cmd = internalClient.createVolumeCmd()) {
+
+        if (name != null && !name.isBlank()) {
+            cmd.withName(name);
+        }
+
+        if (driver != null && !driver.isBlank()) {
+            cmd.withDriver(driver);
+        }
+
+        if (driverOpts != null && !driverOpts.isEmpty()) {
+            cmd.withDriverOpts(driverOpts);
+        }
+
+        if (labels != null && !labels.isEmpty()) {
+            cmd.withLabels(labels);
+        }
+
+        return cmd.exec();
+        }
     }
 
-    public CreateVolumeCmd createVolumeCmd() {
-        return internalClient.createVolumeCmd();
-    }
+    @McpTool(
+            name = "docker_initialize_swarm",
+            description = """
+        Initializes a new Docker Swarm cluster with the given configuration.
 
-    public BuildImageCmd buildImageCmd() {
-        return internalClient.buildImageCmd();
-    }
+        This command sets up the current Docker Engine as a manager node in a new Swarm cluster using the provided Swarm specification.
 
-    public SaveImageCmd saveImageCmd(String name) {
-        return internalClient.saveImageCmd(name);
-    }
+        Parameters:
+        - swarmSpec: (SwarmSpec, required) Specification for initializing the swarm. It includes information like the orchestration, dispatcher, CA configuration, encryption, and Raft configuration.
+        - forceNewCluster: (boolean, required) If true, forces the creation of a new cluster even if one already exists.
 
-    public InitializeSwarmCmd initializeSwarmCmd(SwarmSpec swarmSpec) {
-        return internalClient.initializeSwarmCmd(swarmSpec);
+        Returns:
+        - (boolean) True if the initialization was successful.
+        """
+    )
+    public boolean initializeSwarmCmd(SwarmSpec swarmSpec, boolean forceNewCluster) {
+        internalClient.initializeSwarmCmd(swarmSpec)
+                .withForceNewCluster(forceNewCluster)
+                .exec();
+        return true;
     }
 
     public UpdateServiceCmd updateServiceCmd(String serviceId, ServiceSpec serviceSpec) {
         return internalClient.updateServiceCmd(serviceId, serviceSpec);
-    }
-
-    public CommitCmd commitCmd(String containerId) {
-        return internalClient.commitCmd(containerId);
     }
 
     public ListConfigsCmd listConfigsCmd() {
@@ -841,7 +978,7 @@ public class DockerClientService {
                 Removes a Docker network.
 
                 This command removes a specified Docker network. The network must not be in use by any containers
-                at the time of removal. If containers are using the network, they must be disconnected before the 
+                at the time of removal. If containers are using the network, they must be disconnected before the
                 network can be removed.
 
                 Parameters:

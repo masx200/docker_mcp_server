@@ -121,7 +121,7 @@ Check `io.github.makbn.mcp.mediator.docker.server.DockerMcpServer` for the full 
 ### Supported Docker Commands as MCP Server Tools
 
 | MCP Tool Name                                | Description                                    |
-| -------------------------------------------- | ---------------------------------------------- |
+|----------------------------------------------|------------------------------------------------|
 | docker\_start\_container                     | Start a Docker container by ID.                |
 | docker\_stop\_container                      | Stop a Docker container by ID.                 |
 | docker\_leave\_swarm                         | Remove a node from Docker Swarm.               |
@@ -168,6 +168,12 @@ Check `io.github.makbn.mcp.mediator.docker.server.DockerMcpServer` for the full 
 | docker\_update\_swarm\_node                  | Update the config of a swarm node.             |
 | docker\_info                                 | Show Docker system-wide info.                  |
 | docker\_log\_service                         | Get logs from a Docker service.                |
+| docker\_load\_image                          | Load an image from a tar archive.              |
+| docker\_list\_tasks                          | Lists the tasks in a Docker Swarm environment. |
+| docker\_save\_image                          | Saves a Docker image to a local tar file.      |
+| docker\_join\_swarm                          | Joins the node to an existing Swarm cluster.   |
+| docker\_create\_volume                       | Creates a new Docker volume.                   |
+| docker\_initialize\_swarm                    | Initializes a new Docker Swarm cluster.        |
 
 Work in progress, more to be added.
 
