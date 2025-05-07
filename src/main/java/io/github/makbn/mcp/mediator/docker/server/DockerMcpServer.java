@@ -19,12 +19,12 @@ public class DockerMcpServer {
     private static final String DOCKER_MCP_SERVER_VER = "1.0.0.0";
     private static final String DEFAULT_DOCKER_HOST = "unix:///var/run/docker.sock";
     private static final int DEFAULT_MAX_CONNECTIONS = 100;
+    public static final String HEADER = "'DOCKER_MCP_LOG_FILE' and 'DOCKER_MCP_LOG_LEVEL' can be set as env variables to modify logging config";
 
     public static void main(String[] args) {
         Options options = buildOptions();
         CommandLine cmd = parseOptions(args, options);
         try {
-            configureLogging(cmd);
             String dockerHost = cmd.getOptionValue("docker-host", DEFAULT_DOCKER_HOST);
             String serverName = cmd.getOptionValue("server-name", DOCKER_MCP_SERVER);
             String serverVersion = cmd.getOptionValue("server-version", DOCKER_MCP_SERVER_VER);
@@ -51,25 +51,6 @@ public class DockerMcpServer {
             log.error("Failed to start Docker MCP Server: {}", e.getMessage(), e);
             System.exit(1);
         }
-    }
-
-    private static void configureLogging(CommandLine cmd) {
-        System.setProperty("DOCKER_MCP_LOG_FILE", cmd.getOptionValue("log-file", "logs/mcp_docker_server.log"));
-        System.setProperty("DOCKER_MCP_LOG_LEVEL", cmd.getOptionValue("log-level", "DEBUG"));
-    }
-
-    private static DockerClient intitializeDockerClient() {
-        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("unix:///var/run/docker.sock")
-                .build();
-
-        DockerHttpClient client = new ApacheDockerHttpClient.Builder()
-                .dockerHost(config.getDockerHost())
-                .sslConfig(config.getSSLConfig())
-                .maxConnections(100)
-                .build();
-
-        return DockerClientImpl.getInstance(config, client);
     }
 
     private static DockerClient initializeDockerClient(String dockerHost, int maxConnections, boolean tlsVerify, String certPath, String dockerConfig) {
@@ -132,7 +113,7 @@ public class DockerMcpServer {
 
     private static void printHelp(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("DockerMcpServer", options);
+        formatter.printHelp("java -jar [SERVER_JAR_FILE] ", HEADER, options, "");
     }
 
 }
