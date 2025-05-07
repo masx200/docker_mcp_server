@@ -1,8 +1,11 @@
 # Docker MCP Server
 
-This module provides an implementation of a **Model Context Protocol** MCP server for Docker commands, powered by the [`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
-The Docker MCP Server utilizes the **automatic server generation** feature of MCP Mediator to expose existing Docker commands as MCP Tools. 
-Each command is optionally annotated with `@McpTool` along with a minimal description to enhance tool discoverability and usability.
+This module provides an implementation of a **Model Context Protocol** MCP server for Docker commands, powered by the [
+`mcp_mediator`](https://github.com/makbn/mcp_mediator) core framework.
+The Docker MCP Server utilizes the **automatic server generation** feature of MCP Mediator to expose existing Docker
+commands as MCP Tools.
+Each command is optionally annotated with `@McpTool` along with a minimal description to enhance tool discoverability
+and usability.
 
 👉 See the full list of supported commands [here](#supported-docker-commands-as-mcp-server-tools).
 
@@ -10,8 +13,10 @@ Each command is optionally annotated with `@McpTool` along with a minimal descri
 
 
 > [!IMPORTANT]  
-> This is part of `mcp_mediator` project: [https://github.com/makbn/docker_mcp_server](https://github.com/makbn/docker_mcp_server)
-> To build or modify, clone the parent repository: `git clone --recurse-submodules https://github.com/makbn/docker_mcp_server.git`
+> This is part of `mcp_mediator`
+> project: [https://github.com/makbn/docker_mcp_server](https://github.com/makbn/docker_mcp_server)
+> To build or modify, clone the parent repository:
+`git clone --recurse-submodules https://github.com/makbn/docker_mcp_server.git`
 
 ### Usage Examples
 
@@ -26,8 +31,8 @@ java -jar docker-mcp-server.jar \
   --docker-config=/custom/docker/config
 ```
 
-
 To run Docker MCP Server with Claude Desktop with `java -jar`:
+
 ```yaml
 {
   "mcpServers": {
@@ -50,13 +55,14 @@ To run Docker MCP Server with Claude Desktop with `java -jar`:
 ```
 
 Or create the native image (see the steps below) and use the standalone application:
+
 ```yaml
 {
   "mcpServers": {
     "my_java_mcp_server": {
       "command": "docker-mcp-server-executable",
       "args": [
-        "--docker-host=tcp://localhost:2376" // rest of args 
+        "--docker-host=tcp://localhost:2376" // rest of args
       ]
     }
   }
@@ -64,26 +70,34 @@ Or create the native image (see the steps below) and use the standalone applicat
 ```
 
 ### How to Build
+
 To build the executable:
+
 ```bash
 mvn clean compile package
 ```
-This command creates a jar file under `target` folder `mcp-mediator-implementation-docker-[version].jar`. You can stop here and use the jar file and execute it
+
+This command creates a jar file under `target` folder `mcp-mediator-implementation-docker-[version].jar`. You can stop
+here and use the jar file and execute it
 using `java -jar` command. Or, you can create a standalone executable application using GraalVM native image:
 
 ```bash
  native-image -jar mcp-mediator-implementation-docker-[version].jar     
 ```
-and this command creates an executable file: `'mcp-mediator-implementation-docker-[version]` that can be executed.
 
+and this command creates an executable file: `'mcp-mediator-implementation-docker-[version]` that can be executed.
 
 ### Automatically Generate MCP Tools
 
-This project integrates with [`MCP Mediator`](https://github.com/makbn/mcp_mediator) to automatically generate MCP Tools from existing Docker services.
+This project integrates with [`MCP Mediator`](https://github.com/makbn/mcp_mediator) to automatically generate MCP Tools
+from existing Docker services.
 
-Each method in the Docker service class can optionally be annotated with `@McpTool` to explicitly define the tool’s **name**, **description**, and other metadata.
+Each method in the Docker service class can optionally be annotated with `@McpTool` to explicitly define the tool’s *
+*name**, **description**, and other metadata.
 
-However, annotation is **not required**—MCP Mediator supports automatic generation for **non-annotated methods** by inferring details from the method, class, and package names. To enable this behavior, set `createForNonAnnotatedMethods` to `true`:
+However, annotation is **not required**—MCP Mediator supports automatic generation for **non-annotated methods** by
+inferring details from the method, class, and package names. To enable this behavior, set `createForNonAnnotatedMethods`
+to `true`:
 
 ```java
 DefaultMcpMediator mediator = new DefaultMcpMediator(McpMediatorConfigurationBuilder.builder()
@@ -92,30 +106,36 @@ DefaultMcpMediator mediator = new DefaultMcpMediator(McpMediatorConfigurationBui
         .serverVersion(serverVersion)
         .build());
 
-mediator.registerHandler(McpServiceFactory.create(dockerClientService)
-        .createForNonAnnotatedMethods(true)); // Enables support for non-annotated methods
+mediator.
+
+registerHandler(McpServiceFactory.create(dockerClientService)
+        .
+
+createForNonAnnotatedMethods(true)); // Enables support for non-annotated methods
 
 ```
 
 Check `io.github.makbn.mcp.mediator.docker.server.DockerMcpServer` for the full Mcp Mediator configuration.
 
-
-
- 
 ### Supported CLI Options
 
-| Option             | Description                                           | Default                       |
-|--------------------|-------------------------------------------------------|-------------------------------|
-| `--docker-host`    | Docker daemon host URI                                | `unix:///var/run/docker.sock` |
-| `--tls-verify`     | Enable TLS verification (used with `--cert-path`)     | `false`                        |
-| `--cert-path`      | Path to Docker TLS client certificates (required if TLS is enabled) | _none_              |
-| `--docker-config`  | Custom Docker config directory                         | `~/.docker`                    |
-| `--server-name`    | Server name for the MCP server                         | `docker_mcp_server`            |
-| `--server-version` | Server version label                                   | `1.0.0.0`                      |
-| `--max-connections`| Maximum number of connections to Docker daemon        | `100`                          |
-| `--log-level`      | Logging level (`TRACE`, `DEBUG`, `INFO`, etc.)        | `DEBUG`                        |
-| `--log-file`       | Path to log output file                                | `logs/example.log`             |
-| `--help`           | Show usage and available options                       | _n/a_                          |
+| Option              | Description                                                         | Default                       |
+|---------------------|---------------------------------------------------------------------|-------------------------------|
+| `--docker-host`     | Docker daemon host URI                                              | `unix:///var/run/docker.sock` |
+| `--tls-verify`      | Enable TLS verification (used with `--cert-path`)                   | `false`                       |
+| `--cert-path`       | Path to Docker TLS client certificates (required if TLS is enabled) | _none_                        |
+| `--docker-config`   | Custom Docker config directory                                      | `~/.docker`                   |
+| `--server-name`     | Server name for the MCP server                                      | `docker_mcp_server`           |
+| `--server-version`  | Server version label                                                | `1.0.0.0`                     |
+| `--max-connections` | Maximum number of connections to Docker daemon                      | `100`                         |
+| `--help`            | Show usage and available options                                    | _n/a_                         |
+
+Environment variables:
+
+| Option                | Description                                    | Default                      |
+|-----------------------|------------------------------------------------|------------------------------|
+| `DOCKER_MCP_LOG_LEVEL` | Logging level (`TRACE`, `DEBUG`, `INFO`, etc.) | `DEBUG`                      |
+| `DOCKER_MCP_LOG_FILE` | Path to log output file                        | `logs/docker_mcp_server.log` |
 
 
 ### Supported Docker Commands as MCP Server Tools
@@ -177,17 +197,19 @@ Check `io.github.makbn.mcp.mediator.docker.server.DockerMcpServer` for the full 
 
 Work in progress, more to be added.
 
-
 ### DockerClientService Function Coverage
- Check the [DockerClientService](./src/main/java/io/github/makbn/mcp/mediator/docker/internal/DockerClientService.java) class for the full list of available and planned tools (to be implemented)
+
+Check the [DockerClientService](./src/main/java/io/github/makbn/mcp/mediator/docker/internal/DockerClientService.java)
+class for the full list of available and planned tools (to be implemented)
 
 > [!IMPORTANT]  
-> Almost all the MCP Tools' descriptions and names are generated automatically using AI agent! 
-
+> Almost all the MCP Tools' descriptions and names are generated automatically using AI agent!
 
 ### 🧩 Repository Structure and Git Subtree Setup
 
-This project is a **Git subtree module** of the parent repository [`makbn/mcp_mediator`](https://github.com/makbn/mcp_mediator). It is kept in its own repository to support independent versioning, CI, and release processes, while remaining integrated into the main `mcp_mediator` mono-repo.
+This project is a **Git subtree module** of the parent repository [
+`makbn/mcp_mediator`](https://github.com/makbn/mcp_mediator). It is kept in its own repository to support independent
+versioning, CI, and release processes, while remaining integrated into the main `mcp_mediator` mono-repo.
 
 ### 🔀 Cloning Structure
 
@@ -196,6 +218,7 @@ If you're working in the context of the full `mcp_mediator` system:
 ```bash
 `git clone --recurse-submodules https://github.com/makbn/docker_mcp_server.git`
 ```
+
 ### Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. Read this first!
