@@ -130,7 +130,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget unzip && \
     apt-get autoremove --purge -y && apt-get clean
 
 # Copy configuration file
-COPY settings.json /root/mcp-streamable-http-bridge/settings.json
+COPY settings.json /data/settings.json
 
 # Expose port for HTTP bridge
 EXPOSE 3000
@@ -138,5 +138,5 @@ EXPOSE 3000
 # Start the HTTP bridge which will launch the Docker MCP Server
 # The bridge will be started by the base image's docker-entrypoint.sh
 # We override the CMD to start our specific configuration
-CMD ["node", "/root/mcp-streamable-http-bridge/main.js", "--host", "0.0.0.0", "--port", "3000", "--config", "/root/mcp-streamable-http-bridge/settings.json"]
+CMD ["node", "/root/mcp-streamable-http-bridge/main.js", "--host", "0.0.0.0", "--port", "3000", "--config", "/data/settings.json"]
 
