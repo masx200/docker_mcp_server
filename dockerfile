@@ -18,14 +18,17 @@ RUN mvn clean package -B -DskipTests
 # Stage 2: Create the final Docker image
 FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
 
-# Install OpenJDK 11
+# Install OpenJDK 11 (Using default-jdk for compatibility with newer Debian versions)
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk \
+    default-jdk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set JAVA_HOME environment variable
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+# Set JAVA_HOME environment variable (auto-detect Java installation)
+RUN JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::") && \
+    echo "JAVA_HOME=$JAVA_HOME" >> /etc/environment && \
+    echo "export JAVA_HOME=$JAVA_HOME" >> /root/.bashrc
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Verify Java installation
