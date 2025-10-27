@@ -43,6 +43,13 @@ COPY src ./src
 # Build the application (now pom.xml has hardcoded version)
 RUN mvn clean package -B -DskipTests
 
+# Verify the JAR was created and contains the main manifest
+RUN ls -la /app/target/ && \
+    echo "=== Checking JAR files ===" && \
+    find /app/target -name "*.jar" -type f && \
+    echo "=== Checking main class in shaded JAR ===" && \
+    find /app/target -name "*shaded*.jar" -exec jar tf {} \; | grep -E "(META-INF/MANIFEST\.MF|Main-Class)" || echo "No Main-Class found"
+
 # Stage 2: Create the final Docker image
 # FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
 # 压缩镜像之后,不再使用老的镜像
@@ -98,7 +105,12 @@ RUN java -version && node --version
 WORKDIR /root/docker_mcp_server
 
 # Copy the built JAR from the maven-builder stage
-COPY --from=maven-builder /app/target/*.jar /root/docker_mcp_server/docker-mcp-server.jar
+COPY --from=maven-builder /app/target/*.jar /root/docker_mcp_server/
+
+# Find the correct JAR file (the one with dependencies, not sources)
+RUN cd /root/docker_mcp_server && \
+    find . -name "*shaded*.jar" -exec cp {} docker-mcp-server.jar \; || \
+    find . -name "*.jar" -not -name "*sources.jar" -exec cp {} docker-mcp-server.jar \;
 
 # Copy configuration file
 # COPY settings.json /root/mcp-streamable-http-bridge/settings.json
