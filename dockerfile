@@ -27,14 +27,14 @@ COPY pom.xml .
 # Copy the maven repository from the mcp-mediator-builder stage
 COPY --from=mcp-mediator-builder /root/.m2/repository /root/.m2/repository
 
-# Download dependencies
-RUN mvn dependency:go-offline -B
+# Download dependencies with explicit revision
+RUN mvn dependency:go-offline -B -Drevision=1.0.0-SNAPSHOT
 
 # Copy source code
 COPY src ./src
 
 # Build the application with explicit revision
-RUN mvn clean package -B -DskipTests -Drevision=1.0.0
+RUN mvn clean package -B -DskipTests -Drevision=1.0.0-SNAPSHOT
 
 # Stage 2: Create the final Docker image
 FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
