@@ -2,10 +2,11 @@ version: '3.8'
 
 services:
   docker-mcp-server:
-    build: .
+    # build: .
+    image: docker-mcp-server:slim
     container_name: docker-mcp-server
     ports:
-      - "3000:3000"
+      - "30000:3000"
     volumes:
       - "./settings.json:/data/settings.json"
       - /var/run/docker.sock:/var/run/docker.sock:ro
