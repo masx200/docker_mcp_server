@@ -1,11 +1,91 @@
 # Docker MCP Server
 
 
-## docker 
-
+## docker
 
 ```bash
 docker pull docker.cnb.cool/masx200/docker_mirror/docker_mcp_server:latest
+```
+
+### Building and Running with Docker
+
+#### Build Docker Image
+
+To build the Docker image locally:
+
+```bash
+docker build -t docker-mcp-server .
+```
+
+#### Run the Docker Container
+
+After building the image, you can run it:
+
+```bash
+# Basic run
+docker run -d -p 3000:3000 --name docker-mcp-server docker-mcp-server
+
+# With Docker socket mounted (for Docker operations)
+docker run -d -p 3000:3000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --name docker-mcp-server docker-mcp-server
+
+# With custom configuration
+docker run -d -p 8080:3000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -e DOCKER_HOST=unix:///var/run/docker.sock \
+  --name docker-mcp-server docker-mcp-server
+```
+
+#### Access the MCP Server
+
+Once the container is running, the Docker MCP Server will be available through the HTTP bridge:
+
+- **HTTP endpoint**: `http://localhost:3000/mcp/docker`
+- **WebSocket endpoint**: `http://localhost:3000/ws/docker`
+- **SSE endpoint**: `http://localhost:3000/sse/docker`
+
+#### Example MCP Configuration
+
+Here's how to configure the Docker MCP Server with Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "docker": {
+      "url": "http://localhost:3000/mcp/docker",
+      "transport": "streamable-http"
+    }
+  }
+}
+```
+
+Or with WebSocket:
+
+```json
+{
+  "mcpServers": {
+    "docker": {
+      "url": "ws://localhost:3000/ws/docker",
+      "transport": "ws"
+    }
+  }
+}
+```
+
+### Using Docker Compose
+
+For easier deployment, you can use the provided `docker-compose.yml` file:
+
+```bash
+# Start the service
+docker-compose up -d
+
+# Stop the service
+docker-compose down
+
+# View logs
+docker-compose logs -f
 ```
 
 This module provides an implementation of a **Model Context Protocol** MCP server for Docker commands, powered by the [

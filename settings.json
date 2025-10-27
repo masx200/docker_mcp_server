@@ -1,0 +1,30 @@
+{
+  "enableHttpServer": true,
+  "wsServer": {
+    "enabled": true,
+    "pathPrefix": "/ws"
+  },
+  "sseServer": {
+    "enabled": true,
+    "endpoint": "/sse",
+    "messageEndpoint": "/messages"
+  },
+  "pathPrefix": "/mcp",
+  "hotReload": false,
+  "apiKey": "",
+  "port": 3000,
+  "host": "0.0.0.0",
+  "corsAllowOrigins": ["*"],
+  "mcpServers": {
+    "docker": {
+      "command": "java",
+      "args": [
+        "-jar",
+        "/root/docker_mcp_server/docker-mcp-server.jar",
+        "--server-name=docker-mcp-server",
+        "--server-version=1.0.0",
+        "--max-connections=100"
+      ]
+    }
+  }
+}

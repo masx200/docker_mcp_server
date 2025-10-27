@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  docker-mcp-server:
+    build: .
+    container_name: docker-mcp-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./settings.json:/root/settings.json"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - BRIDGE_API_PORT=3000
+      - BRIDGE_API_PWD=/root
+    restart: unless-stopped
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
