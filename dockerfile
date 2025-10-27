@@ -44,8 +44,10 @@ COPY src ./src
 RUN mvn clean package -B -DskipTests
 
 # Stage 2: Create the final Docker image
-FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
+# FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
+# 压缩镜像之后,不再使用老的镜像
 
+from docker.cnb.cool/masx200/docker_mirror/docker-mcp-server:slim
 # Install OpenJDK 17 (Using default-jdk for compatibility with newer Debian versions)
 RUN apt-get update && apt-get install -y \
     default-jdk \
