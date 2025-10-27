@@ -117,29 +117,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <version>${native-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>build-native</id>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <imageName>${project.artifactId}</imageName>
-                    <mainClass>io.github.makbn.mcp.mediator.docker.server.DockerMcpServer</mainClass>
-                    <buildArgs>
-                        <buildArg>--no-fallback</buildArg>
-                        <buildArg>--initialize-at-build-time</buildArg>
-                        <buildArg>-H:+ReportExceptionStackTraces</buildArg>
-                    </buildArgs>
-                </configuration>
-            </plugin>
-        </plugins>
+          </plugins>
     </build>
 </project>
