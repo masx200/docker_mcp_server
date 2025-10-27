@@ -112,6 +112,10 @@ RUN cd /root/docker_mcp_server && \
     find . -name "*shaded*.jar" -exec cp {} docker-mcp-server.jar \; || \
     find . -name "*.jar" -not -name "*sources.jar" -exec cp {} docker-mcp-server.jar \;
 
+# Verify the JAR contains the main class and dependencies
+RUN echo "=== Checking JAR contents ===" && \
+    jar tf /root/docker_mcp_server/docker-mcp-server.jar | grep -E "(org/apache/commons/cli/ParseException|io/github/makbn/mcp/mediator/docker/server/DockerMcpServer)" || echo "Required classes not found in JAR"
+
 # Copy configuration file
 # COPY settings.json /root/mcp-streamable-http-bridge/settings.json
 COPY settings.json /data/settings.json

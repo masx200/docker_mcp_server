@@ -99,3 +99,52 @@ Test files are located in `src/test/java/io/github/makbn/mediator/docker/handler
 - **logback**: Logging framework
 
 The project is part of the larger `mcp_mediator` ecosystem and is maintained as a Git subtree module for independent versioning while keeping integration with the main mono-repo.
+
+
+
+## 测试方法
+
+```bash
+
+npx -y @modelcontextprotocol/inspector --cli http://localhost:30000/mcp/docker --transport http --method tools/list
+```
+## 报错信息
+
+
+
+```
+Failed to connect to MCP server: Error POSTing to endpoint (HTTP 500): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>McpError: MCP error -32000: Connection closed<br> &nbsp; &nbsp;at Client._onclose (file:///root/mcp-streamable-http-bridge/node_modules/.store/@modelcontextprotocol+sdk@1.20.1/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js:109:23)<br> &nbsp; &nbsp;at _transport.onclose (file:///root/mcp-streamable-http-bridge/node_modules/.store/@modelcontextprotocol+sdk@1.20.1/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js:76:18)<br> &nbsp; &nbsp;at ChildProcess.&lt;anonymous&gt; (file:///root/mcp-streamable-http-bridge/node_modules/.store/@modelcontextprotocol+sdk@1.20.1/node_modules/@modelcontextprotocol/sdk/dist/esm/client/stdio.js:95:77)<br> &nbsp; &nbsp;at ChildProcess.emit (node:events:507:28)<br> &nbsp; &nbsp;at maybeClose (node:internal/child_process:1101:16)<br> &nbsp; &nbsp;at ChildProcess._handle.onexit (node:internal/child_process:305:5)</pre>
+</body>
+</html>
+
+
+Failed with exit code: 1
+```
+```
+Error: Unable to initialize main class io.github.makbn.mcp.mediator.docker.server.DockerMcpServer
+
+Caused by: java.lang.NoClassDefFoundError: org/apache/commons/cli/ParseException
+
+172.20.0.1 - - [27/Oct/2025:13:25:22 +0000] "POST /mcp/docker HTTP/1.1" 500 1012 "-" "node"
+
+McpError: MCP error -32000: Connection closed
+
+    at Client._onclose (file:///root/mcp-streamable-http-bridge/node_modules/.store/@modelcontextprotocol+sdk@1.20.1/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js:109:23)
+
+    at _transport.onclose (file:///root/mcp-streamable-http-bridge/node_modules/.store/@modelcontextprotocol+sdk@1.20.1/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js:76:18)
+
+    at ChildProcess.<anonymous> (file:///root/mcp-streamable-http-bridge/node_modules/.store/@modelcontextprotocol+sdk@1.20.1/node_modules/@modelcontextprotocol/sdk/dist/esm/client/stdio.js:95:77)
+
+    at ChildProcess.emit (node:events:507:28)
+
+    at maybeClose (node:internal/child_process:1101:16)
+
+    at ChildProcess._handle.onexit (node:internal/child_process:305:5)
+```
