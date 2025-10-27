@@ -9,12 +9,12 @@ RUN git clone https://gh-proxy.com/https://github.com/makbn/mcp_mediator.git .
 # Check the parent pom.xml to find the version
 RUN cat pom.xml | grep -A 5 -B 5 "revision" || echo "No revision found"
 
-# Set the revision property in the parent pom first
-RUN mvn clean install -N -B -DskipTests -Drevision=1.0.0 || echo "Failed to install parent pom with version 1.0.0"
+# Set the revision property in the parent pom first (use correct version 1.0.0-SNAPSHOT)
+RUN mvn clean install -N -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to install parent pom with version 1.0.0-SNAPSHOT"
 
 # Build mcp-mediator-core and mcp-mediator-api with explicit version
-RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0 || echo "Failed to build core module"
-RUN cd mcp-mediator-api && mvn clean install -B -DskipTests -Drevision=1.0.0 || echo "Failed to build api module"
+RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to build core module"
+RUN cd mcp-mediator-api && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to build api module"
 
 # Stage 1: Build the Java application
 FROM maven:3.8.4-openjdk-17 AS maven-builder
