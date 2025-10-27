@@ -1,3 +1,4 @@
+## 先下载https://gh-proxy.com/https://github.com/makbn/mcp_mediator, 然后编译这个<groupId>io.github.makbn</groupId> <artifactId>mcp_mediator</artifactId> 项目
 # Stage 1: Build the Java application
 FROM maven:3.8.4-openjdk-11 AS maven-builder
 
