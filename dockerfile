@@ -26,7 +26,7 @@ COPY settings.xml /usr/share/maven/conf/settings.xml
 WORKDIR /app
 
 # Copy pom.xml first for better Docker layer caching
-COPY pom.xml .
+COPY pom-fixed.xml ./pom.xml
 
 # Replace ${revision} with actual version in pom.xml
 RUN sed -i 's/\${revision}/1.0.0-SNAPSHOT/g' pom.xml
