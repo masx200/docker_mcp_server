@@ -107,10 +107,13 @@ WORKDIR /root/docker_mcp_server
 # Copy the built JAR from the maven-builder stage
 COPY --from=maven-builder /app/target/*.jar /root/docker_mcp_server/
 
-# Find the correct JAR file (the one with dependencies, not sources)
+# Find the correct JAR file (the one with dependencies, not sources) - copy the largest JAR
 RUN cd /root/docker_mcp_server && \
-    find . -name "*shaded*.jar" -exec cp {} docker-mcp-server.jar \; || \
-    find . -name "*.jar" -not -name "*sources.jar" -exec cp {} docker-mcp-server.jar \;
+    ls -la *.jar && \
+    rm -f docker-mcp-server.jar && \
+    cp mcp-mediator-implementation-docker-1.0.0-SNAPSHOT.jar docker-mcp-server.jar && \
+    echo "=== Copied JAR file ===" && \
+    ls -la docker-mcp-server.jar
 
 # Verify the JAR contains the main class and dependencies
 RUN echo "=== Checking JAR contents ===" && \
