@@ -6,16 +6,15 @@ WORKDIR /build
 # Clone mcp_mediator project
 RUN git clone https://gh-proxy.com/https://github.com/makbn/mcp_mediator.git .
 
-# Find the actual parent pom and build it
-# First, let's check what's available and build the core modules we need
-RUN find . -name "pom.xml" -type f | head -10
+# Check the parent pom.xml to find the version
+RUN cat pom.xml | grep -A 5 -B 5 "revision" || echo "No revision found"
 
-# Build mcp-mediator-core and mcp-mediator-api first (skip the problematic docker module)
-RUN cd mcp-mediator-core && mvn clean install -B -DskipTests || echo "Failed to build core module"
-RUN cd mcp-mediator-api && mvn clean install -B -DskipTests || echo "Failed to build api module"
+# Set the revision property in the parent pom first
+RUN mvn clean install -N -B -DskipTests -Drevision=1.0.0 || echo "Failed to install parent pom with version 1.0.0"
 
-# Install the parent pom to local repository
-RUN mvn clean install -N -B -DskipTests || echo "Failed to install parent pom"
+# Build mcp-mediator-core and mcp-mediator-api with explicit version
+RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0 || echo "Failed to build core module"
+RUN cd mcp-mediator-api && mvn clean install -B -DskipTests -Drevision=1.0.0 || echo "Failed to build api module"
 
 # Stage 1: Build the Java application
 FROM maven:3.8.4-openjdk-17 AS maven-builder
@@ -34,8 +33,8 @@ RUN mvn dependency:go-offline -B
 # Copy source code
 COPY src ./src
 
-# Build the application
-RUN mvn clean package -B -DskipTests
+# Build the application with explicit revision
+RUN mvn clean package -B -DskipTests -Drevision=1.0.0
 
 # Stage 2: Create the final Docker image
 FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
