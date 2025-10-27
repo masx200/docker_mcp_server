@@ -12,9 +12,9 @@ RUN cat pom.xml | grep -A 5 -B 5 "revision" || echo "No revision found"
 # Set the revision property in the parent pom first (use correct version 1.0.0-SNAPSHOT)
 RUN mvn clean install -N -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to install parent pom with version 1.0.0-SNAPSHOT"
 
-# Build mcp-mediator-core and mcp-mediator-api with explicit version
-RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT
+# Build mcp-mediator-api first (core depends on api)
 RUN cd mcp-mediator-api && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT
+RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT
 
 # Verify the artifacts were created
 RUN ls -la /root/.m2/repository/io/github/makbn/mcp-mediator-core/1.0.0-SNAPSHOT/ || echo "Core artifacts not found"
