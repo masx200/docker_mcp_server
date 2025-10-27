@@ -175,7 +175,7 @@ $RECYCLE.BIN/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+*.tar
 ### VS Code ###
 .vscode/
 

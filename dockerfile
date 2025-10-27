@@ -52,6 +52,36 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Remove unnecessary packages to reduce image size
+RUN apt-get remove --purge -y \
+    python3 python3-dev python3-pip python3-wheel python3-packaging \
+    build-essential gcc g++ make libc6-dev linux-libc-dev dpkg-dev \
+    perl perl-modules-5.40 libperl5.40 zlib1g-dev uuid-dev x11proto-dev xtrans-dev \
+    libpython3-dev libpython3.13-dev manpages-dev git || true
+
+RUN apt-get autoremove --purge -y && apt-get clean
+
+# Remove documentation, include headers, and static libraries
+RUN rm -rf /usr/share/doc/* /usr/share/man/* /usr/include/* \
+    /usr/lib/x86_64-linux-gnu/*.a /usr/lib/gcc
+
+# Remove fonts, icons, and themes
+RUN rm -rf /usr/share/fonts/* /usr/share/icons/* /usr/share/themes/*
+
+# Remove GUI libraries and X11 dependencies
+RUN apt-get remove --purge -y \
+    libgtk* libgdk* libglib* libpango* libcairo* libatk* \
+    libgdk-pixbuf* libatspi* libx11-6 libxext6 libxrandr2 libxrender1 \
+    libxi6 libxtst6 libxxf86vm1 default-jdk default-jre || true
+
+RUN apt-get autoremove --purge -y && apt-get clean
+
+# Install minimal Java JRE (headless)
+RUN mkdir -p /usr/share/man/man1 && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-21-jre-headless && \
+    dpkg --configure -a && apt-get clean
+
 # Set JAVA_HOME environment variable (auto-detect Java installation)
 RUN JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::") && \
     echo "JAVA_HOME=$JAVA_HOME" >> /etc/environment && \
@@ -59,8 +89,8 @@ RUN JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::") && \
 ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Verify Java installation
-RUN java -version
+# Verify Java and Node installation
+RUN java -version && node --version
 
 # Set working directory
 WORKDIR /root/docker_mcp_server
