@@ -13,8 +13,12 @@ RUN cat pom.xml | grep -A 5 -B 5 "revision" || echo "No revision found"
 RUN mvn clean install -N -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to install parent pom with version 1.0.0-SNAPSHOT"
 
 # Build mcp-mediator-core and mcp-mediator-api with explicit version
-RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to build core module"
-RUN cd mcp-mediator-api && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT || echo "Failed to build api module"
+RUN cd mcp-mediator-core && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT
+RUN cd mcp-mediator-api && mvn clean install -B -DskipTests -Drevision=1.0.0-SNAPSHOT
+
+# Verify the artifacts were created
+RUN ls -la /root/.m2/repository/io/github/makbn/mcp-mediator-core/1.0.0-SNAPSHOT/ || echo "Core artifacts not found"
+RUN ls -la /root/.m2/repository/io/github/makbn/mcp-mediator-api/1.0.0-SNAPSHOT/ || echo "API artifacts not found"
 
 # Stage 1: Build the Java application
 FROM maven:3.8.4-openjdk-17 AS maven-builder
@@ -24,17 +28,20 @@ WORKDIR /app
 # Copy pom.xml first for better Docker layer caching
 COPY pom.xml .
 
+# Replace ${revision} with actual version in pom.xml
+RUN sed -i 's/\${revision}/1.0.0-SNAPSHOT/g' pom.xml
+
 # Copy the maven repository from the mcp-mediator-builder stage
 COPY --from=mcp-mediator-builder /root/.m2/repository /root/.m2/repository
 
-# Download dependencies with explicit revision
-RUN mvn dependency:go-offline -B -Drevision=1.0.0-SNAPSHOT
+# Download dependencies (now pom.xml has hardcoded version)
+RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY src ./src
 
-# Build the application with explicit revision
-RUN mvn clean package -B -DskipTests -Drevision=1.0.0-SNAPSHOT
+# Build the application (now pom.xml has hardcoded version)
+RUN mvn clean package -B -DskipTests
 
 # Stage 2: Create the final Docker image
 FROM docker.cnb.cool/masx200/docker_mirror/mcp-streamable-http-bridge:2.5.1
