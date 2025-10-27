@@ -46,5 +46,5 @@ EXPOSE 3000
 # Start the HTTP bridge which will launch the Docker MCP Server
 # The bridge will be started by the base image's docker-entrypoint.sh
 # We override the CMD to start our specific configuration
-CMD ["node", "/root/mcp-streamable-http-bridge/main.js", "--host", "0.0.0.0", "--port", "3000"]
+CMD ["node", "/root/mcp-streamable-http-bridge/main.js", "--host", "0.0.0.0", "--port", "3000" , "--config",       "/data/settings.json"]
 
