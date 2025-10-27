@@ -3,8 +3,8 @@ version: '3.8'
 services:
   docker-mcp-server:
     command: ["node", "/root/mcp-streamable-http-bridge/main.js", "--host", "0.0.0.0", "--port", "3000", "--config", "/data/settings.json"]
-    # build: .
-    image: docker-mcp-server:shade-fixed
+    build: .
+    # image: docker-mcp-server:shade-fixed
     container_name: docker-mcp-server
     ports:
       - "30000:3000"
